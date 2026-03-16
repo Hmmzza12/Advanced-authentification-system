@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 transition-colors duration-200 antialiased;
+  }
+  
+  .dark body {
+    @apply bg-dark-bg text-gray-100;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/80 dark:bg-dark-surface/80 backdrop-blur-md border border-gray-200 dark:border-dark-border shadow-xl rounded-2xl;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-2 bg-gray-50 dark:bg-dark-bg border border-gray-300 dark:border-dark-border rounded-lg 
+           focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200
+           text-gray-900 dark:text-gray-100 disabled:opacity-50;
+  }
+  
+  .btn-primary {
+    @apply w-full py-2 px-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow-md 
+           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface
+           transition-all duration-200 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed
+           disabled:hover:translate-y-0 flex items-center justify-center gap-2;
+  }
+  
+  .btn-secondary {
+    @apply w-full py-2 px-4 bg-gray-200 hover:bg-gray-300 dark:bg-dark-border dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 
+           font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface
+           transition-all duration-200 flex items-center justify-center gap-2;
+  }
+}

@@ -1,0 +1,37 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Project specific
+git/
+maven/
+jdk.zip
+maven.zip
+git_portable_download.exe
+releases.html
+test_write.txt
+
+# Backend
+backend/target/
+backend/*.log
+backend/.factorypath
+backend/.settings/
+backend/.project
+backend/.classpath
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# OS
+Thumbs.db
+.DS_Store
