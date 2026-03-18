@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Input from '../common/Input';
 import Button from '../common/Button';
 import PasswordStrength from './PasswordStrength';
+import SocialLoginButtons from './SocialLoginButtons';
 import api from '../../services/api';
 
 const SignupForm = () => {
@@ -137,6 +138,8 @@ const SignupForm = () => {
             <Button type="submit" isLoading={isLoading} className="mt-6">
                 Create Account
             </Button>
+
+            <SocialLoginButtons />
 
             <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
                 Already have an account?{' '}

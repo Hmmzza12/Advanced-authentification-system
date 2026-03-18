@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Input from '../common/Input';
 import Button from '../common/Button';
 import OTPInput from './OTPInput';
+import SocialLoginButtons from './SocialLoginButtons';
 import { useAuth } from '../../hooks/useAuth';
 import api from '../../services/api';
 
@@ -166,15 +167,20 @@ const LoginForm = () => {
                 </div>
 
                 <div className="text-sm">
-                    <a href="#" className="font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400">
+                    <Link 
+                        to="/forgot-password" 
+                        className="font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400"
+                    >
                         Forgot password?
-                    </a>
+                    </Link>
                 </div>
             </div>
 
             <Button type="submit" isLoading={isLoading} className="mt-6">
                 Sign In
             </Button>
+
+            <SocialLoginButtons />
 
             <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
                 Don't have an account?{' '}

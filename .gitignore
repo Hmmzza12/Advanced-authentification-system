@@ -32,6 +32,14 @@ frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
+# Database
+*.sqlite
+*.sqlite-journal
+
+# Logs
+backend/*.err
+backend/*.log
+
 # OS
 Thumbs.db
 .DS_Store

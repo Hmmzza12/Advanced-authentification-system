@@ -55,7 +55,7 @@ public class OTPController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> authenticate2FA(@RequestParam String username,
+    public ResponseEntity<?> authenticate2FA(@RequestParam("username") String username,
                                              @Valid @RequestBody OTPRequest otpRequest) {
         // This endpoint is used during login when requires2fa is true
         JwtResponse response = authService.authenticate2FA(username, otpRequest.getCode());

@@ -7,6 +7,7 @@ import com.auth.backend.repository.UserRepository;
 import com.auth.backend.security.UserDetailsImpl;
 import com.auth.backend.service.AuthService;
 import com.auth.backend.service.OTPService;
+import com.auth.backend.service.PasswordResetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class AuthController {
     private final AuthService authService;
     private final UserRepository userRepository;
     private final OTPService otpService;
+    private final PasswordResetService passwordResetService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -35,6 +37,18 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         JwtResponse response = authService.authenticateUser(loginRequest);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        passwordResetService.createPasswordResetToken(request.getEmail());
+        return ResponseEntity.ok(new MessageResponse("If an account exists with this email, you will receive a password reset link shortly."));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        passwordResetService.resetPassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok(new MessageResponse("Password has been reset successfully."));
     }
 
     @PostMapping("/refresh-token")

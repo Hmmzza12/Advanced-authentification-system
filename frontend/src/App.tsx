@@ -5,6 +5,9 @@ import { useAuth } from './hooks/useAuth';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import OAuth2RedirectHandler from './components/auth/OAuth2RedirectHandler';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     const { isAuthenticated, isLoading } = useAuth();
@@ -39,6 +42,9 @@ function App() {
                         <Route path="/" element={<Navigate to="/login" replace />} />
                         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                         <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+                        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+                        <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+                        <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
                         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                         <Route path="*" element={<Navigate to="/login" replace />} />
                     </Routes>

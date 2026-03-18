@@ -3,6 +3,11 @@ package com.auth.backend.config;
 import com.auth.backend.security.AuthEntryPointJwt;
 import com.auth.backend.security.JwtAuthenticationFilter;
 import com.auth.backend.security.UserDetailsServiceImpl;
+import com.auth.backend.security.oauth2.CustomAuthorizationRequestResolver;
+import com.auth.backend.security.oauth2.CustomOAuth2UserService;
+import com.auth.backend.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.auth.backend.security.oauth2.OAuth2AuthenticationFailureHandler;
+import com.auth.backend.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +21,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -28,6 +34,13 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPointJwt unauthorizedHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ClientRegistrationRepository clientRegistrationRepository;
+    
+    // OAuth2 Dependencies
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -54,8 +67,34 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> 
-                    auth.requestMatchers("/api/auth/**", "/api/2fa/authenticate").permitAll()
+                    auth.requestMatchers(
+                            new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/api/auth/login"),
+                            new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/api/auth/signup"),
+                            new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/api/auth/refresh-token"),
+                            new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/api/auth/forgot-password"),
+                            new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/api/auth/reset-password"),
+                            new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/api/2fa/authenticate"),
+                            new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/oauth2/**"),
+                            new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/login/oauth2/**"),
+                            new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/error")
+                        ).permitAll()
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                    .authorizationEndpoint(customizer -> customizer
+                        .baseUri("/oauth2/authorize")
+                        .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+                        .authorizationRequestResolver(new CustomAuthorizationRequestResolver(
+                                clientRegistrationRepository, "/oauth2/authorize"))
+                    )
+                    .redirectionEndpoint(customizer -> customizer
+                        .baseUri("/oauth2/callback/*")
+                    )
+                    .userInfoEndpoint(customizer -> customizer
+                        .userService(customOAuth2UserService)
+                    )
+                    .successHandler(oAuth2AuthenticationSuccessHandler)
+                    .failureHandler(oAuth2AuthenticationFailureHandler)
                 );
 
         http.authenticationProvider(authenticationProvider());
