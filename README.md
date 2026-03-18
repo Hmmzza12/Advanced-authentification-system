@@ -1,56 +1,68 @@
-# Authentication System with 2FA TOTP
+# Advanced Authentication System (2FA + Social Login)
 
-A production-ready authentication system featuring a Spring Boot backend, a React with TypeScript frontend, and a secure SQLite data store.
+A production-ready authentication system featuring a Spring Boot 3 backend, a React + Vite (TypeScript) frontend, and a secure SQLite data store. This project implements modern security standards including OAuth2, JWT stateless sessions, and 2FA.
 
-## Features
-- JWT stateless authentication (Access Tokens + Refresh Tokens)
-- Real-time password strength validation
-- Two-Factor Authentication (TOTP via Authenticator Apps) using generated QR codes
-- Rate limiting using Bucket4j to prevent brute-force attacks
-- Custom Glassmorphism UI using Tailwind CSS and React Router protected routes
-- Password Hashing with BCrypt (strength 12)
+## ✨ Features
+- **Stateless JWT Sessions**: Access + Refresh Token mechanism for secure, scalable authentication.
+- **Social Login (OAuth2)**: Seamless "Login with Google", "Facebook", and "GitHub" support.
+- **Two-Factor Authentication (2FA)**: TOTP via Authenticator Apps (Google Authenticator, etc.) with real-time QR code generation.
+- **Password Reset Flow**: Complete "Forgot Password" functionality with token-based email resets (Simulated via logs).
+- **Secure Architecture**: 
+  - **BCrypt (Strength 12)** password hashing.
+  - **Rate Limiting** via Bucket4j to prevent brute-force and DDoS.
+  - **Account Linking**: Connect multiple social providers to a single email identity.
+- **Premium UI/UX**: Responsive Glassmorphism design system using Tailwind CSS, Framer Motion, and Lucide Icons.
 
-## Setup Instructions
+## 🚀 Setup Instructions
 
 ### Prerequisites
 - **Java 17+**
 - **Maven 3.8+**
 - **Node.js 18+**
 
+### Configuration (Environment Variables)
+For security, credentials are in `application.properties` as environment variables. Set these before running:
+
+```bash
+# Backend (.env or System Env)
+JWT_SECRET=your_64_character_hex_string
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GITHUB_CLIENT_ID=...
+GITHUB_CLIENT_SECRET=...
+FACEBOOK_CLIENT_ID=...
+FACEBOOK_CLIENT_SECRET=...
+```
+
 ### Backend Setup (Spring Boot)
-1. Open a terminal and navigate to the `backend` folder:
+1. Navigate to the `backend` folder:
    ```bash
    cd backend
    ```
-2. Run the application using Maven:
+2. Run the application:
    ```bash
    mvn spring-boot:run
    ```
-   *The backend will start on `http://localhost:8080`. SQLite database (`auth-db.sqlite`) will be auto-generated in the root of the backend folder.*
+   *The backend starts on `http://localhost:8080`. SQLite database (`auth-db.sqlite`) is auto-generated.*
 
 ### Frontend Setup (React + Vite)
-1. Open a separate terminal and navigate to the `frontend` folder:
+1. Navigate to the `frontend` folder:
    ```bash
    cd frontend
    ```
-2. Install dependencies (if not already done):
+2. Install dependencies & Start:
    ```bash
    npm install
-   ```
-3. Start the development server:
-   ```bash
    npm run dev
    ```
-   *The frontend will start on your local Vite port, typically `http://localhost:5173`.*
+   *The frontend typically starts on `http://localhost:5173`.*
 
 ---
 
-## Security Checklist
-Before moving this entirely to production, ensure you review and update the following:
-- [ ] **Change JWT Secret**: The `app.jwt.secret` in `application.properties` should be a randomly generated secure string strictly injected via environment variables.
-- [ ] **HTTPS/TLS**: Ensure the frontend and backend are served over HTTPS. Configure Spring Security `requiresSecure()` if applicable.
-- [ ] **CORS Origins**: Update the `WebConfig.java` CORS mapping to explicitly list your production frontend domains rather than `*` headers.
-- [ ] **Email Service**: Implement real SMTP configuration in `EmailService.java` replacing the `Logger` statements.
-- [ ] **Rate Limits**: Fine-tune Bucket4j rate limiting configuration mapped directly to your user traffic expectations.
-- [ ] **Refresh Token Duration**: Consider tweaking token lifespan depending on your security versus UX requirement threshold.
-- [ ] **Database Migration to Postgres/MySQL**: Swap SQLite for a robust production database by updating the JDBC driver and Spring JPA Dialect in `pom.xml` and `application.properties`.
+## 🛡️ Security & Production Checklist
+- [x] **Social Provider Linking**: Successfully links separate social accounts to one internal user via email.
+- [ ] **Email Service**: Replace the `PasswordResetService` logger with a real JavaMailSender / SendGrid implementation.
+- [ ] **HTTPS/TLS**: Ensure both tiers are served over HTTPS in production.
+- [ ] **Database Migration**: Consider swapping SQLite for PostgreSQL or MySQL for high-concurrency environments.
+- [ ] **CORS Settings**: Restrict `WebConfig.java` to specific production domains.
+
