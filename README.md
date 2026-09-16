@@ -1,4 +1,4 @@
-# PFE Project — Advanced Authentication System
+Advanced Authentication System
 
 A production-ready authentication system built as a final education project (Projet de Fin d'Études). Features a Spring Boot 3 backend, a React + TypeScript frontend, JWT stateless sessions, OAuth2 social login, and TOTP-based two-factor authentication.
 
